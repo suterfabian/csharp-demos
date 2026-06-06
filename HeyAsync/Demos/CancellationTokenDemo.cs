@@ -18,7 +18,7 @@ public sealed class CancellationTokenDemo : IAsyncDemo
     {
         _logger.WriteHeader(Title);
 
-        using CancellationTokenSource demoTimeout = new(TimeSpan.FromSeconds(3));
+        using CancellationTokenSource demoTimeout = new(TimeSpan.FromSeconds(5));
         using CancellationTokenSource linkedCts =
             CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, demoTimeout.Token);
 
