@@ -1,38 +1,32 @@
-﻿using System.Windows.Controls;
+﻿using System.Text;
 
 namespace HeyAsync.Services;
 
-public sealed class UiLogger
+public sealed class UiLogger : IUiLogger
 {
-    private readonly TextBox _outputTextBox;
+    private readonly StringBuilder _builder = new();
 
-    public UiLogger(TextBox outputTextBox)
-    {
-        _outputTextBox = outputTextBox;
-    }
+    public string OutputText => _builder.ToString();
+
+    public event EventHandler? OutputChanged;
 
     public void WriteLine(string text)
     {
-        _outputTextBox.AppendText($"{DateTime.Now:HH:mm:ss.fff} | {text}{Environment.NewLine}");
-        _outputTextBox.ScrollToEnd();
+        _builder.AppendLine($"{DateTime.Now:HH:mm:ss.fff} | {text}");
+        OutputChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void WriteHeader(string text)
     {
-        // WriteLine("");
-        AddEmptyLine();
+        WriteLine("");
         WriteLine("==================================================");
         WriteLine(text);
         WriteLine("==================================================");
     }
 
-    public void AddEmptyLine()
-    {
-        _outputTextBox.AppendText(""); 
-    }
-
     public void Clear()
     {
-        _outputTextBox.Clear();
+        _builder.Clear();
+        OutputChanged?.Invoke(this, EventArgs.Empty);
     }
 }
