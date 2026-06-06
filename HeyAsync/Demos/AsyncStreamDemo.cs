@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using System.Runtime.CompilerServices;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -14,21 +15,22 @@ public sealed class AsyncStreamDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        await foreach (int value in GenerateValuesAsync())
+        await foreach (int value in GenerateValuesAsync(cancellationToken))
         {
             _logger.WriteLine($"Wert: {value}");
         }
     }
 
-    private static async IAsyncEnumerable<int> GenerateValuesAsync()
+    private static async IAsyncEnumerable<int> GenerateValuesAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         for (int i = 1; i <= 5; i++)
         {
-            await Task.Delay(400);
+            await Task.Delay(400, cancellationToken);
             yield return i;
         }
     }

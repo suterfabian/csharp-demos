@@ -14,21 +14,21 @@ public sealed class AsyncVoidProblemDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        _logger.WriteLine("async void sollte außerhalb von UI-Events vermieden werden.");
-        _logger.WriteLine("Grund: Fehler können nicht sauber awaited oder gefangen werden.");
+        _logger.WriteLine("async void sollte nur für UI-Events verwendet werden.");
+        _logger.WriteLine("Besser ist async Task, weil es awaitbar und testbar ist.");
 
-        await SafeAsyncMethod();
+        await SafeAsyncMethod(cancellationToken);
 
-        _logger.WriteLine("Besser: async Task statt async void.");
+        _logger.WriteLine("Diese Demo verwendet bewusst async Task.");
     }
 
-    private async Task SafeAsyncMethod()
+    private async Task SafeAsyncMethod(CancellationToken cancellationToken)
     {
-        await Task.Delay(300);
-        _logger.WriteLine("Diese Methode kann awaited werden.");
+        await Task.Delay(500, cancellationToken);
+        _logger.WriteLine("SafeAsyncMethod wurde awaited.");
     }
 }

@@ -14,29 +14,28 @@ public sealed class SemaphoreSlimDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
         using SemaphoreSlim semaphore = new(2);
 
-        List<Task> tasks = Enumerable.Range(1, 5)
+        IEnumerable<Task> tasks = Enumerable.Range(1, 5)
             .Select(async number =>
             {
-                await semaphore.WaitAsync();
+                await semaphore.WaitAsync(cancellationToken);
 
                 try
                 {
                     _logger.WriteLine($"Task {number} startet.");
-                    await Task.Delay(1000);
+                    await Task.Delay(1000, cancellationToken);
                     _logger.WriteLine($"Task {number} fertig.");
                 }
                 finally
                 {
                     semaphore.Release();
                 }
-            })
-            .ToList();
+            });
 
         await Task.WhenAll(tasks);
 

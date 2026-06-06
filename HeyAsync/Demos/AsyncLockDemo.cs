@@ -15,25 +15,24 @@ public sealed class AsyncLockDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        List<Task> tasks = Enumerable.Range(1, 3)
-            .Select(ProtectedOperationAsync)
-            .ToList();
+        IEnumerable<Task> tasks = Enumerable.Range(1, 3)
+            .Select(number => ProtectedOperationAsync(number, cancellationToken));
 
         await Task.WhenAll(tasks);
     }
 
-    private async Task ProtectedOperationAsync(int number)
+    private async Task ProtectedOperationAsync(int number, CancellationToken cancellationToken)
     {
-        await _semaphore.WaitAsync();
+        await _semaphore.WaitAsync(cancellationToken);
 
         try
         {
             _logger.WriteLine($"Task {number} betritt kritischen Bereich.");
-            await Task.Delay(700);
+            await Task.Delay(700, cancellationToken);
             _logger.WriteLine($"Task {number} verlässt kritischen Bereich.");
         }
         finally

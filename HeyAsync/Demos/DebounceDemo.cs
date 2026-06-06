@@ -14,32 +14,48 @@ public sealed class DebounceDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
+        using CancellationTokenSource localCts = new();
+        using CancellationTokenSource linkedCts =
+            CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, localCts.Token);
+
         CancellationTokenSource? debounceCts = null;
 
-        for (int i = 1; i <= 5; i++)
+        try
+        {
+            for (int i = 1; i <= 5; i++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                debounceCts?.Cancel();
+                debounceCts?.Dispose();
+
+                debounceCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+                _logger.WriteLine($"Eingabe {i}");
+
+                _ = RunDebouncedAsync(i, debounceCts.Token);
+
+                await Task.Delay(200, cancellationToken);
+            }
+
+            await Task.Delay(1000, cancellationToken);
+        }
+        finally
         {
             debounceCts?.Cancel();
-            debounceCts = new CancellationTokenSource();
-
-            _logger.WriteLine($"Eingabe {i}");
-
-            _ = RunDebouncedAsync(i, debounceCts.Token);
-
-            await Task.Delay(200);
+            debounceCts?.Dispose();
         }
-
-        await Task.Delay(1000);
     }
 
-    private async Task RunDebouncedAsync(int value, CancellationToken token)
+    private async Task RunDebouncedAsync(int value, CancellationToken cancellationToken)
     {
         try
         {
-            await Task.Delay(500, token);
+            await Task.Delay(500, cancellationToken);
             _logger.WriteLine($"Verarbeitet nach Ruhezeit: {value}");
         }
         catch (OperationCanceledException)

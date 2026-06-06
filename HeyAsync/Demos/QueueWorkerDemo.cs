@@ -15,7 +15,7 @@ public sealed class QueueWorkerDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
@@ -23,16 +23,16 @@ public sealed class QueueWorkerDemo : IAsyncDemo
 
         Task worker = Task.Run(async () =>
         {
-            await foreach (string command in queue.Reader.ReadAllAsync())
+            await foreach (string command in queue.Reader.ReadAllAsync(cancellationToken))
             {
                 _logger.WriteLine($"Verarbeite: {command}");
-                await Task.Delay(400);
+                await Task.Delay(400, cancellationToken);
             }
-        });
+        }, cancellationToken);
 
         for (int i = 1; i <= 5; i++)
         {
-            await queue.Writer.WriteAsync($"Command {i}");
+            await queue.Writer.WriteAsync($"Command {i}", cancellationToken);
             _logger.WriteLine($"Eingereiht: Command {i}");
         }
 

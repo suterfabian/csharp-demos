@@ -14,13 +14,14 @@ public sealed class WhenAllDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        Task<string> first = LoadAsync("A", 1000);
-        Task<string> second = LoadAsync("B", 1500);
-        Task<string> third = LoadAsync("C", 500);
+        Task<string> first = LoadAsync("A", 1000, cancellationToken);
+        Task<string> second = LoadAsync("B", 1500, cancellationToken);
+        Task<string> third = LoadAsync("C", 500, cancellationToken);
 
         string[] results = await Task.WhenAll(first, second, third);
 
@@ -30,9 +31,9 @@ public sealed class WhenAllDemo : IAsyncDemo
         }
     }
 
-    private async Task<string> LoadAsync(string name, int delay)
+    private static async Task<string> LoadAsync(string name, int delay, CancellationToken cancellationToken)
     {
-        await Task.Delay(delay);
+        await Task.Delay(delay, cancellationToken);
         return $"Operation {name} fertig.";
     }
 }

@@ -14,21 +14,22 @@ public sealed class TimeoutDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        Task operation = Task.Delay(3000);
-        Task timeout = Task.Delay(1000);
+        using CancellationTokenSource timeoutCts = new(TimeSpan.FromSeconds(1));
+        using CancellationTokenSource linkedCts =
+            CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
-        Task finished = await Task.WhenAny(operation, timeout);
-
-        if (finished == timeout)
+        try
+        {
+            await Task.Delay(3000, linkedCts.Token);
+            _logger.WriteLine("Operation erfolgreich.");
+        }
+        catch (OperationCanceledException) when (timeoutCts.IsCancellationRequested)
         {
             _logger.WriteLine("Timeout erreicht.");
-            return;
         }
-
-        _logger.WriteLine("Operation erfolgreich.");
     }
 }

@@ -14,7 +14,7 @@ public sealed class PeriodicTimerDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
@@ -22,7 +22,7 @@ public sealed class PeriodicTimerDemo : IAsyncDemo
 
         for (int i = 1; i <= 5; i++)
         {
-            await timer.WaitForNextTickAsync();
+            await timer.WaitForNextTickAsync(cancellationToken);
             _logger.WriteLine($"Tick {i}");
         }
 

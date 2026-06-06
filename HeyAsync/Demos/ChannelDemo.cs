@@ -15,7 +15,7 @@ public sealed class ChannelDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
@@ -25,20 +25,21 @@ public sealed class ChannelDemo : IAsyncDemo
         {
             for (int i = 1; i <= 5; i++)
             {
-                await channel.Writer.WriteAsync(i);
+                await channel.Writer.WriteAsync(i, cancellationToken);
                 _logger.WriteLine($"Gesendet: {i}");
+                await Task.Delay(200, cancellationToken);
             }
 
             channel.Writer.Complete();
-        });
+        }, cancellationToken);
 
         Task consumer = Task.Run(async () =>
         {
-            await foreach (int item in channel.Reader.ReadAllAsync())
+            await foreach (int item in channel.Reader.ReadAllAsync(cancellationToken))
             {
                 _logger.WriteLine($"Empfangen: {item}");
             }
-        });
+        }, cancellationToken);
 
         await Task.WhenAll(producer, consumer);
     }

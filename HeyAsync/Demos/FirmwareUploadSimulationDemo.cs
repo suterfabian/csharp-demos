@@ -14,7 +14,7 @@ public sealed class FirmwareUploadSimulationDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
@@ -24,7 +24,9 @@ public sealed class FirmwareUploadSimulationDemo : IAsyncDemo
 
         for (int chunk = 1; chunk <= totalChunks; chunk++)
         {
-            await Task.Delay(200);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await Task.Delay(250, cancellationToken);
 
             int percent = chunk * 100 / totalChunks;
 

@@ -4,5 +4,5 @@ public interface IAsyncDemo
 {
     int Order { get; }
     string Title { get; }
-    Task ExecuteAsync();
+    Task ExecuteAsync(CancellationToken cancellationToken);
 }

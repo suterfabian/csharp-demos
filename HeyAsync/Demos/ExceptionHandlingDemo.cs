@@ -14,13 +14,13 @@ public sealed class ExceptionHandlingDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
         try
         {
-            await FailingOperationAsync();
+            await FailingOperationAsync(cancellationToken);
         }
         catch (InvalidOperationException ex)
         {
@@ -28,9 +28,9 @@ public sealed class ExceptionHandlingDemo : IAsyncDemo
         }
     }
 
-    private static async Task FailingOperationAsync()
+    private static async Task FailingOperationAsync(CancellationToken cancellationToken)
     {
-        await Task.Delay(300);
+        await Task.Delay(500, cancellationToken);
         throw new InvalidOperationException("Demo-Fehler aus async Methode.");
     }
 }

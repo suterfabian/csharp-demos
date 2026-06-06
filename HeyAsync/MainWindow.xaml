@@ -72,6 +72,10 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
+                            <Button Content="Abbrechen"
+                                    Command="{Binding CancelCommand}"
+                                    Style="{StaticResource DangerButtonStyle}" />
+
                             <Button Content="Ausgabe leeren"
                                     Command="{Binding ClearCommand}"
                                     Style="{StaticResource DangerButtonStyle}" />

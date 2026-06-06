@@ -14,11 +14,11 @@ public sealed class UiFreezeDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        _logger.WriteLine("CPU-Arbeit gehört nicht direkt auf den UI-Thread.");
+        _logger.WriteLine("CPU-Arbeit wird mit Task.Run vom UI-Thread weggenommen.");
 
         int result = await Task.Run(() =>
         {
@@ -26,11 +26,16 @@ public sealed class UiFreezeDemo : IAsyncDemo
 
             for (int i = 0; i < 50_000_000; i++)
             {
+                if (i % 100_000 == 0)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
+
                 sum += i % 10;
             }
 
             return sum;
-        });
+        }, cancellationToken);
 
         _logger.WriteLine($"Berechnung fertig: {result}");
     }

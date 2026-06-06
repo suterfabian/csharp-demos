@@ -15,30 +15,34 @@ public sealed class ProducerConsumerDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
         using BlockingCollection<int> queue = new();
 
-        Task producer = Task.Run(() =>
+        Task producer = Task.Run(async () =>
         {
             for (int i = 1; i <= 5; i++)
             {
-                queue.Add(i);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                queue.Add(i, cancellationToken);
                 _logger.WriteLine($"Produziert: {i}");
+
+                await Task.Delay(200, cancellationToken);
             }
 
             queue.CompleteAdding();
-        });
+        }, cancellationToken);
 
         Task consumer = Task.Run(() =>
         {
-            foreach (int item in queue.GetConsumingEnumerable())
+            foreach (int item in queue.GetConsumingEnumerable(cancellationToken))
             {
                 _logger.WriteLine($"Verarbeitet: {item}");
             }
-        });
+        }, cancellationToken);
 
         await Task.WhenAll(producer, consumer);
     }

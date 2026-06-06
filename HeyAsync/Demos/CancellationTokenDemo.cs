@@ -14,26 +14,20 @@ public sealed class CancellationTokenDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        using CancellationTokenSource cts = new();
-        cts.CancelAfter(2500);
+        using CancellationTokenSource demoTimeout = new(TimeSpan.FromSeconds(3));
+        using CancellationTokenSource linkedCts =
+            CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, demoTimeout.Token);
 
-        try
+        for (int i = 1; i <= 10; i++)
         {
-            for (int i = 1; i <= 10; i++)
-            {
-                cts.Token.ThrowIfCancellationRequested();
+            linkedCts.Token.ThrowIfCancellationRequested();
 
-                _logger.WriteLine($"Schritt {i}");
-                await Task.Delay(700, cts.Token);
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            _logger.WriteLine("Vorgang wurde abgebrochen.");
+            _logger.WriteLine($"Schritt {i}");
+            await Task.Delay(700, linkedCts.Token);
         }
     }
 }

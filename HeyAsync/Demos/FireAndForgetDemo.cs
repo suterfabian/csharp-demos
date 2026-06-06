@@ -14,24 +14,28 @@ public sealed class FireAndForgetDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public Task ExecuteAsync()
+    public Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        _ = RunInBackgroundSafelyAsync();
+        _ = RunInBackgroundSafelyAsync(cancellationToken);
 
-        _logger.WriteLine("Hintergrundaufgabe wurde gestartet.");
+        _logger.WriteLine("Hintergrundaufgabe gestartet.");
         _logger.WriteLine("Fehler müssen intern behandelt werden.");
 
         return Task.CompletedTask;
     }
 
-    private async Task RunInBackgroundSafelyAsync()
+    private async Task RunInBackgroundSafelyAsync(CancellationToken cancellationToken)
     {
         try
         {
-            await Task.Delay(1000);
+            await Task.Delay(1000, cancellationToken);
             _logger.WriteLine("Fire-and-forget Aufgabe fertig.");
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.WriteLine("Fire-and-forget Aufgabe abgebrochen.");
         }
         catch (Exception ex)
         {

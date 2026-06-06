@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using System.Windows;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -14,17 +15,25 @@ public sealed class DispatcherDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        int backgroundThreadId = await Task.Run(() =>
-        {
-            return Environment.CurrentManagedThreadId;
-        });
+        _logger.WriteLine($"UI Thread vor Task.Run: {Environment.CurrentManagedThreadId}");
 
-        _logger.WriteLine($"Background Thread: {backgroundThreadId}");
-        _logger.WriteLine($"Zurück auf UI Thread: {Environment.CurrentManagedThreadId}");
-        _logger.WriteLine("Nach await läuft der Code wieder auf dem UI Thread.");
+        await Task.Run(async () =>
+        {
+            await Task.Delay(500, cancellationToken);
+
+            int backgroundThreadId = Environment.CurrentManagedThreadId;
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                _logger.WriteLine($"Background Thread war: {backgroundThreadId}");
+                _logger.WriteLine($"Dispatcher Thread ist: {Environment.CurrentManagedThreadId}");
+            });
+        }, cancellationToken);
+
+        _logger.WriteLine($"Nach await wieder UI Thread: {Environment.CurrentManagedThreadId}");
     }
 }

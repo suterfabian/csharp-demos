@@ -14,15 +14,16 @@ public sealed class TaskRunDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
         _logger.WriteLine($"UI Thread vor Task.Run: {Environment.CurrentManagedThreadId}");
 
-        int workerThreadId = await Task.Run(() =>
+        int workerThreadId = await Task.Run(async () =>
         {
-            Thread.Sleep(1500);
+            // Thread.Sleep(1500);
+            await Task.Delay(1500, cancellationToken);
             return Environment.CurrentManagedThreadId;
         });
 

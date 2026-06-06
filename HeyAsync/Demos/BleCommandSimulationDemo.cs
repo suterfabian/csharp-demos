@@ -14,22 +14,22 @@ public sealed class BleCommandSimulationDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        await SendCommandAsync("LED_ON");
-        await SendCommandAsync("READ_STATUS");
-        await SendCommandAsync("LED_OFF");
+        await SendCommandAsync("LED_ON", cancellationToken);
+        await SendCommandAsync("READ_STATUS", cancellationToken);
+        await SendCommandAsync("LED_OFF", cancellationToken);
 
         _logger.WriteLine("BLE-Kommandos simuliert.");
     }
 
-    private async Task SendCommandAsync(string command)
+    private async Task SendCommandAsync(string command, CancellationToken cancellationToken)
     {
         _logger.WriteLine($"Sende: {command}");
 
-        await Task.Delay(300);
+        await Task.Delay(300, cancellationToken);
 
         _logger.WriteLine($"Antwort: OK für {command}");
     }

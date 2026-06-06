@@ -15,7 +15,7 @@ public sealed class FirmwareUploadTransientRetryDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
@@ -25,21 +25,28 @@ public sealed class FirmwareUploadTransientRetryDemo : IAsyncDemo
 
         for (int chunk = 1; chunk <= totalChunks; chunk++)
         {
-            await SendChunkWithRetryAsync(chunk, totalChunks);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await SendChunkWithRetryAsync(chunk, totalChunks, cancellationToken);
         }
 
         _logger.WriteLine("Firmware Upload erfolgreich abgeschlossen.");
     }
 
-    private async Task SendChunkWithRetryAsync(int chunk, int totalChunks)
+    private async Task SendChunkWithRetryAsync(
+        int chunk,
+        int totalChunks,
+        CancellationToken cancellationToken)
     {
         const int maxAttempts = 3;
 
         for (int attempt = 1; attempt <= maxAttempts; attempt++)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
-                await SendChunkAsync(chunk);
+                await SendChunkAsync(chunk, cancellationToken);
 
                 int percent = chunk * 100 / totalChunks;
 
@@ -56,22 +63,23 @@ public sealed class FirmwareUploadTransientRetryDemo : IAsyncDemo
                 }
 
                 int delay = attempt * 300;
+
                 _logger.WriteLine($"Retry in {delay} ms.");
 
-                await Task.Delay(delay);
+                await Task.Delay(delay, cancellationToken);
             }
         }
     }
 
-    private async Task SendChunkAsync(int chunk)
+    private async Task SendChunkAsync(int chunk, CancellationToken cancellationToken)
     {
-        await Task.Delay(150);
+        await Task.Delay(150, cancellationToken);
 
         bool transientError = _random.Next(0, 5) == 0;
 
         if (transientError)
         {
-            throw new InvalidOperationException("Transienter BLE-Fehler.");
+            throw new InvalidOperationException($"Transienter BLE-Fehler bei Chunk {chunk}.");
         }
     }
 }

@@ -14,7 +14,7 @@ public sealed class ProgressDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
@@ -27,10 +27,12 @@ public sealed class ProgressDemo : IAsyncDemo
         {
             for (int i = 0; i <= 100; i += 20)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 progress.Report(i);
-                await Task.Delay(300);
+                await Task.Delay(300, cancellationToken);
             }
-        });
+        }, cancellationToken);
 
         _logger.WriteLine("Fertig.");
     }

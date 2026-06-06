@@ -14,7 +14,7 @@ public sealed class RaceConditionDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
@@ -22,14 +22,17 @@ public sealed class RaceConditionDemo : IAsyncDemo
 
         await Task.Run(() =>
         {
-            Parallel.For(0, 100_000, _ =>
+            Parallel.For(0, 100_000, new ParallelOptions
+            {
+                CancellationToken = cancellationToken
+            }, _ =>
             {
                 counter++;
             });
-        });
+        }, cancellationToken);
 
         _logger.WriteLine("Erwartet: 100000");
         _logger.WriteLine($"Tatsächlich: {counter}");
-        _logger.WriteLine("Die Abweichung entsteht durch gleichzeitige Schreibzugriffe.");
+        _logger.WriteLine("counter++ ist nicht atomar.");
     }
 }

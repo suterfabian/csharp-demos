@@ -14,14 +14,14 @@ public sealed class BasicAsyncDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
         _logger.WriteLine("Start");
         _logger.WriteLine($"Vor await - Thread ID: {Environment.CurrentManagedThreadId}");
 
-        await Task.Delay(2000);
+        await Task.Delay(2000, cancellationToken);
 
         _logger.WriteLine($"Nach await - Thread ID: {Environment.CurrentManagedThreadId}");
         _logger.WriteLine("Ende");

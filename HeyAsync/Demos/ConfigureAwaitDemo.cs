@@ -14,19 +14,18 @@ public sealed class ConfigureAwaitDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
         _logger.WriteLine($"Vor await: {Environment.CurrentManagedThreadId}");
 
-        await Task.Delay(500);
+        await Task.Delay(500, cancellationToken);
 
         _logger.WriteLine($"Nach normalem await: {Environment.CurrentManagedThreadId}");
 
-        await Task.Delay(500).ConfigureAwait(true);
+        await Task.Delay(500, cancellationToken).ConfigureAwait(true);
 
         _logger.WriteLine($"Nach ConfigureAwait(true): {Environment.CurrentManagedThreadId}");
-        _logger.WriteLine("In WPF bleibt man normalerweise auf dem UI-Kontext.");
     }
 }

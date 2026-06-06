@@ -14,21 +14,21 @@ public sealed class DeadlockExampleDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        _logger.WriteLine("Gefährlich wäre in WPF z.B.: SomeAsync().Result");
+        _logger.WriteLine("Problematisch in WPF wäre z.B.: SomeAsync().Result");
         _logger.WriteLine("Das kann den UI-Thread blockieren.");
 
-        string result = await SomeAsync();
+        string result = await SomeAsync(cancellationToken);
 
         _logger.WriteLine($"Richtig mit await: {result}");
     }
 
-    private static async Task<string> SomeAsync()
+    private static async Task<string> SomeAsync(CancellationToken cancellationToken)
     {
-        await Task.Delay(500);
+        await Task.Delay(500, cancellationToken);
         return "fertig";
     }
 }

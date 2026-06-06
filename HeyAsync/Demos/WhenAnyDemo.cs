@@ -14,12 +14,12 @@ public sealed class WhenAnyDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
-        Task<string> fast = LoadAsync("Schnell", 500);
-        Task<string> slow = LoadAsync("Langsam", 2000);
+        Task<string> fast = LoadAsync("Schnell", 500, cancellationToken);
+        Task<string> slow = LoadAsync("Langsam", 2000, cancellationToken);
 
         Task<string> finished = await Task.WhenAny(fast, slow);
 
@@ -27,9 +27,9 @@ public sealed class WhenAnyDemo : IAsyncDemo
         _logger.WriteLine("WhenAny liefert den zuerst fertigen Task.");
     }
 
-    private async Task<string> LoadAsync(string name, int delay)
+    private static async Task<string> LoadAsync(string name, int delay, CancellationToken cancellationToken)
     {
-        await Task.Delay(delay);
+        await Task.Delay(delay, cancellationToken);
         return $"{name} ist fertig.";
     }
 }

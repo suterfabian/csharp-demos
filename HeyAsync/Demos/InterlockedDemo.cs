@@ -14,7 +14,7 @@ public sealed class InterlockedDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
@@ -22,11 +22,14 @@ public sealed class InterlockedDemo : IAsyncDemo
 
         await Task.Run(() =>
         {
-            Parallel.For(0, 100_000, _ =>
+            Parallel.For(0, 100_000, new ParallelOptions
+            {
+                CancellationToken = cancellationToken
+            }, _ =>
             {
                 Interlocked.Increment(ref counter);
             });
-        });
+        }, cancellationToken);
 
         _logger.WriteLine("Erwartet: 100000");
         _logger.WriteLine($"Tatsächlich: {counter}");

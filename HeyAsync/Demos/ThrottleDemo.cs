@@ -14,7 +14,8 @@ public sealed class ThrottleDemo : IAsyncDemo
         _logger = logger;
     }
 
-    public async Task ExecuteAsync()
+
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.WriteHeader(Title);
 
@@ -22,6 +23,8 @@ public sealed class ThrottleDemo : IAsyncDemo
 
         for (int i = 1; i <= 10; i++)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             DateTime now = DateTime.Now;
 
             if (now - lastExecution >= TimeSpan.FromMilliseconds(700))
@@ -34,7 +37,7 @@ public sealed class ThrottleDemo : IAsyncDemo
                 _logger.WriteLine($"Übersprungen: Event {i}");
             }
 
-            await Task.Delay(200);
+            await Task.Delay(200, cancellationToken);
         }
     }
 }
