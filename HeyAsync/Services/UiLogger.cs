@@ -19,10 +19,16 @@ public sealed class UiLogger
 
     public void WriteHeader(string text)
     {
-        WriteLine("");
+        // WriteLine("");
+        AddEmptyLine();
         WriteLine("==================================================");
         WriteLine(text);
         WriteLine("==================================================");
+    }
+
+    public void AddEmptyLine()
+    {
+        _outputTextBox.AppendText(""); 
     }
 
     public void Clear()

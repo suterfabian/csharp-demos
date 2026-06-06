@@ -11,8 +11,8 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="76"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="76" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -25,11 +25,11 @@
                     <TextBlock Text="Async WPF Lab"
                                Foreground="#F9FAFB"
                                FontSize="26"
-                               FontWeight="SemiBold"/>
+                               FontWeight="SemiBold" />
                     <TextBlock Text="Tests für async/await, Dispatcher, Locks und parallele Abläufe"
                                Foreground="#94A3B8"
                                FontSize="13"
-                               Margin="0 4 0 0"/>
+                               Margin="0 4 0 0" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -37,9 +37,9 @@
         <!-- Main Layout -->
         <Grid Grid.Row="1" Margin="22">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260"/>
-                <ColumnDefinition Width="18"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="260" />
+                <ColumnDefinition Width="18" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- Aside -->
@@ -56,33 +56,162 @@
                                Foreground="#F9FAFB"
                                FontSize="18"
                                FontWeight="SemiBold"
-                               Margin="0 0 0 18"/>
+                               Margin="0 0 0 18" />
 
-                    <StackPanel>
-                        <Button Content="01 - Basic async/await"
-                                Style="{StaticResource MenuButtonStyle}"
-                                Click="BasicAsyncButton_Click"/>
+                    <ScrollViewer Style="{StaticResource AsideScrollViewerStyle}"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel>
+                            <Button Content="01 - Basic async/await"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="BasicAsyncButton_Click" />
 
-                        <Button Content="02 - Task.Run"
-                                Style="{StaticResource MenuButtonStyle}"
-                                Click="TaskRunButton_Click"/>
+                            <Button Content="02 - Task.Run"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="TaskRunButton_Click" />
 
-                        <Button Content="03 - Dispatcher"
-                                Style="{StaticResource MenuButtonStyle}"
-                                Click="DispatcherButton_Click"/>
+                            <Button Content="03 - Dispatcher"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="DispatcherButton_Click" />
 
-                        <Button Content="04 - Race Condition"
-                                Style="{StaticResource MenuButtonStyle}"
-                                Click="RaceConditionButton_Click"/>
+                            <Button Content="04 - Race Condition"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="RaceConditionButton_Click" />
 
-                        <Button Content="05 - Lock"
-                                Style="{StaticResource MenuButtonStyle}"
-                                Click="LockButton_Click"/>
+                            <Button Content="05 - Lock"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="LockButton_Click" />
 
-                        <Button Content="Ausgabe leeren"
-                                Style="{StaticResource DangerButtonStyle}"
-                                Click="ClearButton_Click"/>
-                    </StackPanel>
+                            <Button Content="06 - Interlocked"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="InterlockedButton_Click" />
+
+                            <Button Content="07 - Parallel Object List"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="ParallelObjectListButton_Click" />
+
+                            <Button Content="08 - ConcurrentBag"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="ConcurrentBagButton_Click" />
+
+                            <Button Content="09 - Fehler in Tasks"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="TaskErrorButton_Click" />
+                            
+                            <Button Content="10 - CancellationToken"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="CancellationButton_Click"/>
+                            
+                            <Button Content="11 - Deadlock"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="DeadlockButton_Click"/>
+                            
+                            <Button Content="12 - NoDeadlock"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="NoDeadlockButton_Click"/>
+                            
+                            <Button Content="13 - Deadlock Übung"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="DeadlockExerciseButton_Click"/>
+
+                            <Button Content="14 - SemaphoreSlim"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="SemaphoreSlimButton_Click"/>
+
+                            <Button Content="15 - Channel Producer/Consumer"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="ChannelButton_Click"/>
+                            
+                            <Button Content="16 - Async Stream"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="AsyncStreamButton_Click"/>
+                            
+                            <Button Content="17 - Progress Reporting"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="ProgressButton_Click"/>
+                            
+                            <Button Content="18 - WhenAll / WhenAny"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="WhenAllButton_Click"/>
+                            
+                            <Button Content="19 - Task.WhenAny"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="WhenAnyButton_Click"/>
+                            
+                            <Button Content="20 - WhenAll Exceptions"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="WhenAllExceptionButton_Click"/>
+                            
+                            <Button Content="21 - Cancellation + WhenAll"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="CancellationWhenAllButton_Click"/>
+                            
+                            <Button Content="22 - TaskCompletionSource"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="TaskCompletionSourceButton_Click"/>
+                            
+                            <Button Content="23 - TCS Fehlerfall"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="TaskCompletionSourceErrorButton_Click"/>
+                            
+                            <Button Content="24 - BLE Request / Response"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="BleRequestResponseButton_Click"/>
+                            
+                            <Button Content="25 - BLE Timeout"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="BleTimeoutButton_Click"/>
+                            
+                            <Button Content="26 - BLE Retry"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="BleRetryButton_Click"/>
+                            
+                            <Button Content="27 - Retry mit Fehlern"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="BleRetryErrorButton_Click"/>
+                            
+                            <Button Content="28 - BLE Command Queue"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="BleCommandQueueButton_Click"/>
+                            
+                            <Button Content="29 - Firmware Upload"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="FirmwareUploadButton_Click"/>
+                            
+                            <Button Content="30 - Firmware Upload Cancel"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="FirmwareUploadWithCancelButton_Click"/>
+                            
+                            <Button Content="31 - Firmware Upload Retry"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="FirmwareUploadRetryButton_Click"/>
+                            
+                            <Button Content="32 - Firmware Upload Transient Retry"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    Click="FirmwareUploadTransientRetryButton_Click"/>
+                            
+                            
+                            
+                            
+                            
+                            
+                            <Button Content="Firmware Upload abbrechen"
+                                    Style="{StaticResource DangerButtonStyle}"
+                                    Click="CancelFirmwareUploadButton_Click"/>
+                            
+                            <Button Content="BLE Vorgang abbrechen"
+                                    Style="{StaticResource DangerButtonStyle}"
+                                    Click="CancelBleTimeoutButton_Click"/>
+                            
+                            <Button Content="Abbrechen"
+                                    Style="{StaticResource DangerButtonStyle}"
+                                    Click="CancelButton_Click"/>
+
+                            <Button Content="Ausgabe leeren"
+                                    Style="{StaticResource DangerButtonStyle}"
+                                    Click="ClearButton_Click" />
+                        </StackPanel>
+                    </ScrollViewer>
                 </DockPanel>
             </Border>
 
@@ -96,19 +225,19 @@
 
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="14"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="14" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Ausgabe"
                                Foreground="#F9FAFB"
                                FontSize="18"
-                               FontWeight="SemiBold"/>
+                               FontWeight="SemiBold" />
 
                     <TextBox x:Name="OutputTextBox"
                              Grid.Row="2"
-                             Style="{StaticResource OutputTextBoxStyle}"/>
+                             Style="{StaticResource OutputTextBoxStyle}" />
                 </Grid>
             </Border>
         </Grid>
