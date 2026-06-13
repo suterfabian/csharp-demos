@@ -7,7 +7,7 @@ public sealed class FirmwareUploadTransientRetryDemo : IAsyncDemo
     private readonly IUiLogger _logger;
     private readonly Random _random = new();
 
-    public int Order => 32;
+    public int SortOrder => 32;
     public string Title => "32 - Firmware Upload transienter Retry";
 
     public FirmwareUploadTransientRetryDemo(IUiLogger logger)

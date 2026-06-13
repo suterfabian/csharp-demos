@@ -3,41 +3,34 @@ using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
-public sealed class ChannelDemo : IAsyncDemo
+public sealed class ChannelDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 20;
+    public int SortOrder => 20;
     public string Title => "20 - Channel";
-
-    public ChannelDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        Channel<int> channel = Channel.CreateUnbounded<int>();
+        var channel = Channel.CreateUnbounded<int>();
 
-        Task producer = Task.Run(async () =>
+        var producer = Task.Run(async () =>
         {
-            for (int i = 1; i <= 5; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 await channel.Writer.WriteAsync(i, cancellationToken);
-                _logger.WriteLine($"Gesendet: {i}");
+                logger.WriteLine($"Gesendet: {i}");
                 await Task.Delay(200, cancellationToken);
             }
 
             channel.Writer.Complete();
         }, cancellationToken);
 
-        Task consumer = Task.Run(async () =>
+        var consumer = Task.Run(async () =>
         {
-            await foreach (int item in channel.Reader.ReadAllAsync(cancellationToken))
+            await foreach (var item in channel.Reader.ReadAllAsync(cancellationToken))
             {
-                _logger.WriteLine($"Empfangen: {item}");
+                logger.WriteLine($"Empfangen: {item}");
             }
         }, cancellationToken);
 

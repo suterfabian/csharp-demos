@@ -2,41 +2,37 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class LockDemo : IAsyncDemo
+public sealed class LockDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-    private readonly object _syncRoot = new();
-
-    public int Order => 5;
+    private readonly Lock _syncRoot = new();
+    public int SortOrder => 5;
     public string Title => "05 - Lock";
-
-    public LockDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        int counter = 0;
+        var counter = 0;
+
+        Action<int> loopBody = index =>
+        {
+            lock (_syncRoot)
+            {
+                counter++;
+                logger.WriteLine($"Index: {index}, Counter: {counter}");
+            }
+        };
 
         await Task.Run(() =>
         {
-            Parallel.For(0, 100_000, new ParallelOptions
+            Parallel.For(0, 1000, new ParallelOptions
             {
                 CancellationToken = cancellationToken
-            }, _ =>
-            {
-                lock (_syncRoot)
-                {
-                    counter++;
-                }
-            });
+            }, loopBody);
         }, cancellationToken);
 
-        _logger.WriteLine("Erwartet: 100000");
-        _logger.WriteLine($"Tatsächlich: {counter}");
-        _logger.WriteLine("lock schützt den kritischen Bereich.");
+        logger.WriteLine("Erwartet: 1000");
+        logger.WriteLine($"Tatsächlich: {counter}");
+        logger.WriteLine("lock schützt den kritischen Bereich.");
     }
 }

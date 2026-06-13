@@ -6,7 +6,7 @@ public sealed class DebounceDemo : IAsyncDemo
 {
     private readonly IUiLogger _logger;
 
-    public int Order => 27;
+    public int SortOrder => 27;
     public string Title => "27 - Debounce";
 
     public DebounceDemo(IUiLogger logger)

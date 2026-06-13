@@ -2,41 +2,52 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class UiFreezeDemo : IAsyncDemo
+public sealed class UiFreezeDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 18;
+    public int SortOrder => 18;
     public string Title => "18 - UI Freeze";
-
-    public UiFreezeDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        _logger.WriteLine("CPU-Arbeit wird mit Task.Run vom UI-Thread weggenommen.");
+        logger.WriteLine("CPU-Arbeit wird mit Task.Run vom UI-Thread weggenommen.");
 
-        int result = await Task.Run(() =>
+        var sum = 0L;
+        var endTime = DateTime.UtcNow.AddSeconds(5);
+
+        while (DateTime.UtcNow < endTime)
         {
-            int sum = 0;
+            cancellationToken.ThrowIfCancellationRequested();
 
-            for (int i = 0; i < 50_000_000; i++)
+            for (var i = 0; i < 100_000; i++)
             {
-                if (i % 100_000 == 0)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-
                 sum += i % 10;
+            }
+        }
+        
+        logger.WriteLine($"Berechnung fertig: {sum}");
+        
+/*
+        var result = await Task.Run(() =>
+        {
+            var sum = 0L;
+            var endTime = DateTime.UtcNow.AddSeconds(5);
+
+            while (DateTime.UtcNow < endTime)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                for (var i = 0; i < 100_000; i++)
+                {
+                    sum += i % 10;
+                }
             }
 
             return sum;
         }, cancellationToken);
-
-        _logger.WriteLine($"Berechnung fertig: {result}");
+        
+        logger.WriteLine($"Berechnung fertig: {result}");
+*/
     }
 }

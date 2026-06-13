@@ -2,30 +2,30 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class ConfigureAwaitDemo : IAsyncDemo
+public sealed class ConfigureAwaitDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 10;
+    public int SortOrder => 10;
     public string Title => "10 - ConfigureAwait";
-
-    public ConfigureAwaitDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        _logger.WriteLine($"Vor await: {Environment.CurrentManagedThreadId}");
+        logger.WriteLine($"Vor await: {Environment.CurrentManagedThreadId}");
 
         await Task.Delay(500, cancellationToken);
 
-        _logger.WriteLine($"Nach normalem await: {Environment.CurrentManagedThreadId}");
+        logger.WriteLine($"Nach normalem await: {Environment.CurrentManagedThreadId}");
+        
+        // ConfigureAwait(true)
+        //     = wie normales await
+        //     = versuche zurück auf den ursprünglichen Context
+        //
+        // ConfigureAwait(false)
+        //     = kein Zurückwechseln erzwingen
+        //     = Fortsetzung darf auf ThreadPool laufen
+        await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
-        await Task.Delay(500, cancellationToken).ConfigureAwait(true);
-
-        _logger.WriteLine($"Nach ConfigureAwait(true): {Environment.CurrentManagedThreadId}");
+        logger.WriteLine($"Nach ConfigureAwait(true): {Environment.CurrentManagedThreadId}");
     }
 }

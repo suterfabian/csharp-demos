@@ -2,25 +2,39 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class TaskCompletionSourceDemo : IAsyncDemo
+/*
+    Diese Demo zeigt TaskCompletionSource<T>.
+
+    TaskCompletionSource<T> wird verwendet,
+    wenn ein Task nicht direkt durch eine async-Methode entsteht,
+    sondern durch ein externes Ereignis abgeschlossen werden soll.
+
+    Beispiele:
+        - Callback wird ausgelöst
+        - Event wird empfangen
+        - Signal kommt von außen
+        - alte API soll in async/await integriert werden
+
+    In dieser Demo:
+        - tcs.Task wird awaited
+        - ein Hintergrundtask setzt später das Resultat
+        - Cancellation kann den Task abbrechen
+
+    Dadurch kann normal mit await gearbeitet werden,
+    obwohl das Ergebnis manuell von außen gesetzt wird.
+*/
+public sealed class TaskCompletionSourceDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 25;
+    public int SortOrder => 25;
     public string Title => "25 - TaskCompletionSource";
-
-    public TaskCompletionSourceDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
         TaskCompletionSource<string> tcs = new();
 
-        await using CancellationTokenRegistration registration =
+        await using var registration =
             cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken));
 
         _ = Task.Run(async () =>
@@ -29,10 +43,10 @@ public sealed class TaskCompletionSourceDemo : IAsyncDemo
             tcs.TrySetResult("Signal empfangen.");
         }, cancellationToken);
 
-        _logger.WriteLine("Warte auf externes Signal...");
+        logger.WriteLine("Warte auf externes Signal...");
 
-        string result = await tcs.Task;
+        var result = await tcs.Task;
 
-        _logger.WriteLine(result);
+        logger.WriteLine(result);
     }
 }

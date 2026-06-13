@@ -6,7 +6,7 @@ public sealed class ThrottleDemo : IAsyncDemo
 {
     private readonly IUiLogger _logger;
 
-    public int Order => 28;
+    public int SortOrder => 28;
     public string Title => "28 - Throttle";
 
     public ThrottleDemo(IUiLogger logger)

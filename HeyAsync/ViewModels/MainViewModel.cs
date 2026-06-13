@@ -15,11 +15,11 @@ public sealed partial class MainViewModel : ObservableObject
     public ObservableCollection<AsyncDemoButtonViewModel> DemoButtons { get; }
 
     [ObservableProperty]
-    private string outputText = string.Empty;
+    public partial string OutputText { get; set; } = string.Empty;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CancelCommand))]
-    private bool isDemoRunning;
+    private bool _isDemoRunning;
 
     public MainViewModel(IEnumerable<IAsyncDemo> demos, IUiLogger logger)
     {
@@ -27,16 +27,12 @@ public sealed partial class MainViewModel : ObservableObject
 
         DemoButtons = new ObservableCollection<AsyncDemoButtonViewModel>(
             demos
-                .OrderBy(demo => demo.Order)
+                .OrderBy(demo => demo.SortOrder)
                 .Select(demo => new AsyncDemoButtonViewModel(
                     demo.Title,
                     new AsyncRelayCommand(() => RunDemoAsync(demo), CanRunDemo))));
 
         _logger.OutputChanged += OnOutputChanged;
-
-        _logger.WriteLine("Async WPF Lab gestartet.");
-        _logger.WriteLine($"UI Thread ID: {Environment.CurrentManagedThreadId}");
-        _logger.WriteLine("");
     }
 
     private bool CanRunDemo()
@@ -97,7 +93,7 @@ public sealed partial class MainViewModel : ObservableObject
 
     private void RefreshDemoButtons()
     {
-        foreach (AsyncDemoButtonViewModel button in DemoButtons)
+        foreach (var button in DemoButtons)
         {
             if (button.Command is IRelayCommand relayCommand)
             {

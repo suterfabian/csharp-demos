@@ -3,37 +3,30 @@ using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
-public sealed class DispatcherDemo : IAsyncDemo
+public sealed class DispatcherDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 3;
+    public int SortOrder => 3;
     public string Title => "03 - Dispatcher";
-
-    public DispatcherDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        _logger.WriteLine($"UI Thread vor Task.Run: {Environment.CurrentManagedThreadId}");
+        logger.WriteLine($"UI Thread vor Task.Run: {Environment.CurrentManagedThreadId}");
 
         await Task.Run(async () =>
         {
-            await Task.Delay(500, cancellationToken);
+            await Task.Delay(3000, cancellationToken);
 
-            int backgroundThreadId = Environment.CurrentManagedThreadId;
+            var backgroundThreadId = Environment.CurrentManagedThreadId;
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                _logger.WriteLine($"Background Thread war: {backgroundThreadId}");
-                _logger.WriteLine($"Dispatcher Thread ist: {Environment.CurrentManagedThreadId}");
+                logger.WriteLine($"Background Thread war: {backgroundThreadId}");
+                logger.WriteLine($"Dispatcher Thread ist: {Environment.CurrentManagedThreadId}");
             });
         }, cancellationToken);
 
-        _logger.WriteLine($"Nach await wieder UI Thread: {Environment.CurrentManagedThreadId}");
+        logger.WriteLine($"Nach await wieder UI Thread: {Environment.CurrentManagedThreadId}");
     }
 }

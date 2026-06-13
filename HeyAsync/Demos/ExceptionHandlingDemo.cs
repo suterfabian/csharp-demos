@@ -2,21 +2,14 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class ExceptionHandlingDemo : IAsyncDemo
+public sealed class ExceptionHandlingDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 12;
+    public int SortOrder => 12;
     public string Title => "12 - Exception Handling";
-
-    public ExceptionHandlingDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
         try
         {
@@ -24,7 +17,7 @@ public sealed class ExceptionHandlingDemo : IAsyncDemo
         }
         catch (InvalidOperationException ex)
         {
-            _logger.WriteLine($"Fehler gefangen: {ex.Message}");
+            logger.WriteLine($"Fehler gefangen: {ex.Message}");
         }
     }
 

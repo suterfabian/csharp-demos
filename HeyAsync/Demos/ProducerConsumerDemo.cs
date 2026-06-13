@@ -3,47 +3,56 @@ using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
-public sealed class ProducerConsumerDemo : IAsyncDemo
+public sealed class ProducerConsumerDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 19;
+    public int SortOrder => 19;
     public string Title => "19 - Producer Consumer";
-
-    public ProducerConsumerDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        using BlockingCollection<int> queue = new();
+        using var queue = new BlockingCollection<int>();
 
-        Task producer = Task.Run(async () =>
+        await RunProducerConsumerAsync(queue, cancellationToken);
+    }
+
+    private async Task RunProducerConsumerAsync(BlockingCollection<int> queue, CancellationToken cancellationToken)
+    {
+        var producer = ProduceAsync(queue, cancellationToken);
+        var consumer = ConsumeAsync(queue, cancellationToken);
+
+        await Task.WhenAll(producer, consumer);
+    }
+
+    private async Task ProduceAsync(BlockingCollection<int> queue, CancellationToken cancellationToken)
+    {
+        try
         {
-            for (int i = 1; i <= 5; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                logger.WriteLine($"Produziert: {i}");
                 queue.Add(i, cancellationToken);
-                _logger.WriteLine($"Produziert: {i}");
 
                 await Task.Delay(200, cancellationToken);
             }
-
-            queue.CompleteAdding();
-        }, cancellationToken);
-
-        Task consumer = Task.Run(() =>
+        }
+        finally
         {
-            foreach (int item in queue.GetConsumingEnumerable(cancellationToken))
+            queue.CompleteAdding();
+        }
+    }
+
+    private Task ConsumeAsync(BlockingCollection<int> queue, CancellationToken cancellationToken)
+    {
+        return Task.Run(() =>
+        {
+            foreach (var item in queue.GetConsumingEnumerable(cancellationToken))
             {
-                _logger.WriteLine($"Verarbeitet: {item}");
+                logger.WriteLine($"Verarbeitet: {item}");
             }
         }, cancellationToken);
-
-        await Task.WhenAll(producer, consumer);
     }
 }

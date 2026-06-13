@@ -6,7 +6,7 @@ public sealed class BleCommandSimulationDemo : IAsyncDemo
 {
     private readonly IUiLogger _logger;
 
-    public int Order => 30;
+    public int SortOrder => 30;
     public string Title => "30 - BLE Command Simulation";
 
     public BleCommandSimulationDemo(IUiLogger logger)

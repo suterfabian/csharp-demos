@@ -2,26 +2,20 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class FireAndForgetDemo : IAsyncDemo
+public sealed class FireAndForgetDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 16;
+    public int SortOrder => 16;
     public string Title => "16 - Fire and Forget";
-
-    public FireAndForgetDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
+        // kein await!!!
         _ = RunInBackgroundSafelyAsync(cancellationToken);
 
-        _logger.WriteLine("Hintergrundaufgabe gestartet.");
-        _logger.WriteLine("Fehler müssen intern behandelt werden.");
+        logger.WriteLine("Hintergrundaufgabe gestartet.");
+        logger.WriteLine("Fehler müssen intern behandelt werden.");
 
         return Task.CompletedTask;
     }
@@ -30,16 +24,16 @@ public sealed class FireAndForgetDemo : IAsyncDemo
     {
         try
         {
-            await Task.Delay(1000, cancellationToken);
-            _logger.WriteLine("Fire-and-forget Aufgabe fertig.");
+            await Task.Delay(4000, cancellationToken);
+            logger.WriteLine("Fire-and-forget Aufgabe fertig.");
         }
         catch (OperationCanceledException)
         {
-            _logger.WriteLine("Fire-and-forget Aufgabe abgebrochen.");
+            logger.WriteLine("Fire-and-forget Aufgabe abgebrochen.");
         }
         catch (Exception ex)
         {
-            _logger.WriteLine($"Fehler: {ex.Message}");
+            logger.WriteLine($"Fehler: {ex.Message}");
         }
     }
 }

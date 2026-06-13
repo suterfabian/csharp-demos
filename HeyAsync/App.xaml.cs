@@ -50,6 +50,9 @@ public partial class App : Application
         services.AddTransient<IAsyncDemo, BleCommandSimulationDemo>();
         services.AddTransient<IAsyncDemo, FirmwareUploadSimulationDemo>();
         services.AddTransient<IAsyncDemo, FirmwareUploadTransientRetryDemo>();
+        services.AddTransient<IAsyncDemo, DispatcherSynchronizationDemo>();
+        services.AddTransient<IAsyncDemo, SynchronizationContextDemo>();
+        services.AddTransient<IAsyncDemo, ChannelTDemo>();
 
         services.AddTransient<MainViewModel>();
         services.AddTransient<MainWindow>();

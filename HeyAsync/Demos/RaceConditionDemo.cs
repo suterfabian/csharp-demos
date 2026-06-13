@@ -2,23 +2,16 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class RaceConditionDemo : IAsyncDemo
+public sealed class RaceConditionDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 4;
+    public int SortOrder => 4;
     public string Title => "04 - Race Condition";
-
-    public RaceConditionDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        int counter = 0;
+        var counter = 0;
 
         await Task.Run(() =>
         {
@@ -31,8 +24,8 @@ public sealed class RaceConditionDemo : IAsyncDemo
             });
         }, cancellationToken);
 
-        _logger.WriteLine("Erwartet: 100000");
-        _logger.WriteLine($"Tatsächlich: {counter}");
-        _logger.WriteLine("counter++ ist nicht atomar.");
+        logger.WriteLine("Erwartet: 100000");
+        logger.WriteLine($"Tatsächlich: {counter}");
+        logger.WriteLine("counter++ ist nicht atomar.");
     }
 }

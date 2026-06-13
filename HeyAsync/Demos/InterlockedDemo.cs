@@ -2,23 +2,16 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class InterlockedDemo : IAsyncDemo
+public sealed class InterlockedDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 6;
+    public int SortOrder => 6;
     public string Title => "06 - Interlocked";
-
-    public InterlockedDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        int counter = 0;
+        var counter = 0;
 
         await Task.Run(() =>
         {
@@ -31,8 +24,8 @@ public sealed class InterlockedDemo : IAsyncDemo
             });
         }, cancellationToken);
 
-        _logger.WriteLine("Erwartet: 100000");
-        _logger.WriteLine($"Tatsächlich: {counter}");
-        _logger.WriteLine("Interlocked.Increment ist atomar.");
+        logger.WriteLine("Erwartet: 100000");
+        logger.WriteLine($"Tatsächlich: {counter}");
+        logger.WriteLine("Interlocked.Increment ist atomar.");
     }
 }

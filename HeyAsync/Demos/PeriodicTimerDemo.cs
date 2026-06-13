@@ -2,30 +2,45 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class PeriodicTimerDemo : IAsyncDemo
+/*
+    PeriodicTimer erzeugt wiederkehrende Ticks in einem festen Intervall.
+
+    WaitForNextTickAsync(...)
+        wartet asynchron auf den nächsten Tick,
+        ohne den UI-Thread zu blockieren.
+
+    Der CancellationToken sorgt dafür,
+        dass das Warten sauber abgebrochen werden kann.
+
+    using sorgt dafür,
+        dass der Timer nach der Demo wieder freigegeben wird.
+*/
+public sealed class PeriodicTimerDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 24;
+    public int SortOrder => 24;
     public string Title => "24 - PeriodicTimer";
-
-    public PeriodicTimerDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
         using PeriodicTimer timer = new(TimeSpan.FromMilliseconds(500));
 
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
         {
             await timer.WaitForNextTickAsync(cancellationToken);
-            _logger.WriteLine($"Tick {i}");
+            logger.WriteLine($"Tick {i}");
         }
 
-        _logger.WriteLine("Timer beendet.");
+        logger.WriteLine("Timer beendet.");
     }
 }
+
+/*  Periodisches Polling
+    using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
+
+    while (await timer.WaitForNextTickAsync(cancellationToken))
+    {
+        await CheckConnectionAsync(cancellationToken);
+    }
+*/

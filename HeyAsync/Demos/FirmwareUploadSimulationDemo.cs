@@ -6,7 +6,7 @@ public sealed class FirmwareUploadSimulationDemo : IAsyncDemo
 {
     private readonly IUiLogger _logger;
 
-    public int Order => 31;
+    public int SortOrder => 31;
     public string Title => "31 - Firmware Upload Simulation";
 
     public FirmwareUploadSimulationDemo(IUiLogger logger)

@@ -2,28 +2,21 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class DeadlockExampleDemo : IAsyncDemo
+public sealed class DeadlockExampleDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 17;
+    public int SortOrder => 17;
     public string Title => "17 - Deadlock Beispiel";
-
-    public DeadlockExampleDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        _logger.WriteLine("Problematisch in WPF wäre z.B.: SomeAsync().Result");
-        _logger.WriteLine("Das kann den UI-Thread blockieren.");
+        logger.WriteLine("Problematisch in WPF wäre z.B.: SomeAsync().Result");
+        logger.WriteLine("Das kann den UI-Thread blockieren.");
 
-        string result = await SomeAsync(cancellationToken);
+        var result = await SomeAsync(cancellationToken);
 
-        _logger.WriteLine($"Richtig mit await: {result}");
+        logger.WriteLine($"Richtig mit await: {result}");
     }
 
     private static async Task<string> SomeAsync(CancellationToken cancellationToken)

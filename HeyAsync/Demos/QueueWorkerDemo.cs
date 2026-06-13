@@ -7,7 +7,7 @@ public sealed class QueueWorkerDemo : IAsyncDemo
 {
     private readonly IUiLogger _logger;
 
-    public int Order => 29;
+    public int SortOrder => 29;
     public string Title => "29 - Queue Worker";
 
     public QueueWorkerDemo(IUiLogger logger)

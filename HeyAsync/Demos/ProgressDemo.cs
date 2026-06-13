@@ -2,30 +2,24 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class ProgressDemo : IAsyncDemo
+public sealed class ProgressDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
-    public int Order => 9;
+    public int SortOrder => 9;
     public string Title => "09 - Progress";
-
-    public ProgressDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
+        // IProgress<int> merkt sich beim Erstellen den aktuellen SynchronizationContext.
         IProgress<int> progress = new Progress<int>(value =>
         {
-            _logger.WriteLine($"Fortschritt: {value}%");
+            logger.WriteLine($"Fortschritt: {value}%"); // UI-Zugriff
         });
 
         await Task.Run(async () =>
         {
-            for (int i = 0; i <= 100; i += 20)
+            for (var i = 0; i <= 100; i += 20)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -34,6 +28,6 @@ public sealed class ProgressDemo : IAsyncDemo
             }
         }, cancellationToken);
 
-        _logger.WriteLine("Fertig.");
+        logger.WriteLine("Fertig.");
     }
 }

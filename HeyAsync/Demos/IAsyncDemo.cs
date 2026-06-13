@@ -2,7 +2,7 @@
 
 public interface IAsyncDemo
 {
-    int Order { get; }
+    int SortOrder { get; }
     string Title { get; }
     Task ExecuteAsync(CancellationToken cancellationToken);
 }
