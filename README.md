@@ -1,10 +1,6 @@
-# HeyAsync
+# CSharpDemos
 
-Kleines WPF-Lernprojekt für `async/await`, `Task.Run`, `Dispatcher`, Race Conditions und `lock`.
-
-## Ziel
-
-Die Test-Buttons werden nicht mehr statisch in XAML definiert, sondern dynamisch aus Demo-Klassen erzeugt.
+Kleines WPF-Lernprojekt für die C#-Programmierung.
 
 ## Verwendete Dependencies
 
@@ -28,6 +24,7 @@ HeyAsync
 │  ├─ DispatcherDemo.cs
 │  ├─ RaceConditionDemo.cs
 │  └─ LockDemo.cs
+│  └─ ...
 ├─ Services
 │  ├─ IUiLogger.cs
 │  └─ UiLogger.cs
