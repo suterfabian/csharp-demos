@@ -2,37 +2,30 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class FirmwareUploadSimulationDemo : IAsyncDemo
+public sealed class FirmwareUploadSimulationDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
     public int SortOrder => 31;
     public string Title => "31 - Firmware Upload Simulation";
 
-    public FirmwareUploadSimulationDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
-
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        byte[] firmware = new byte[1024];
-        int chunkSize = 128;
-        int totalChunks = firmware.Length / chunkSize;
+        var firmware = new byte[1024];
+        const int chunkSize = 128;
+        var totalChunks = firmware.Length / chunkSize;
 
-        for (int chunk = 1; chunk <= totalChunks; chunk++)
+        for (var chunk = 1; chunk <= totalChunks; chunk++)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             await Task.Delay(250, cancellationToken);
 
-            int percent = chunk * 100 / totalChunks;
+            var percent = chunk * 100 / totalChunks;
 
-            _logger.WriteLine($"Chunk {chunk}/{totalChunks} gesendet - {percent}%");
+            logger.WriteLine($"Chunk {chunk}/{totalChunks} gesendet - {percent}%");
         }
 
-        _logger.WriteLine("Firmware Upload abgeschlossen.");
+        logger.WriteLine("Firmware Upload abgeschlossen.");
     }
 }

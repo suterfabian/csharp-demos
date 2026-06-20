@@ -3,43 +3,52 @@ using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
-public sealed class QueueWorkerDemo : IAsyncDemo
+/// <summary>
+/// Demonstriert einen einfachen Queue-Worker mit Channel.
+///
+/// Commands werden in eine Queue geschrieben, während ein Worker
+/// diese im Hintergrund nacheinander ausliest und verarbeitet.
+///
+/// Das Einreihen erfolgt schneller als die Verarbeitung.
+/// Dadurch wird sichtbar, dass der Channel die Commands puffert
+/// und der Worker sie kontrolliert der Reihe nach abarbeitet.
+///
+/// Nach dem Einreihen aller Commands wird der Writer abgeschlossen.
+/// Der Worker verarbeitet anschliessend alle verbleibenden Einträge,
+/// bis die Queue leer ist.
+/// </summary>
+public sealed class QueueWorkerDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
     public int SortOrder => 29;
     public string Title => "29 - Queue Worker";
 
-    public QueueWorkerDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
-
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
+        logger.WriteHeader(Title);
 
-        Channel<string> queue = Channel.CreateUnbounded<string>();
+        var queue = Channel.CreateUnbounded<string>();
 
-        Task worker = Task.Run(async () =>
+        var worker = Task.Run(async () =>
         {
-            await foreach (string command in queue.Reader.ReadAllAsync(cancellationToken))
+            await foreach (var command in queue.Reader.ReadAllAsync(cancellationToken))
             {
-                _logger.WriteLine($"Verarbeite: {command}");
-                await Task.Delay(400, cancellationToken);
+                logger.WriteLine($"Verarbeite: {command}");
+                await Task.Delay(100, cancellationToken);
             }
         }, cancellationToken);
 
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
         {
             await queue.Writer.WriteAsync($"Command {i}", cancellationToken);
-            _logger.WriteLine($"Eingereiht: Command {i}");
+            logger.WriteLine($">Eingereiht: Command {i}");
+            
+            await Task.Delay(40, cancellationToken);
         }
 
         queue.Writer.Complete();
 
         await worker;
 
-        _logger.WriteLine("Queue leer.");
+        logger.WriteLine("Queue leer.");
     }
 }

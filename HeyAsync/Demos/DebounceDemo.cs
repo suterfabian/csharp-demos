@@ -2,31 +2,38 @@
 
 namespace HeyAsync.Demos;
 
-public sealed class DebounceDemo : IAsyncDemo
+/// <summary>
+/// Demonstriert das Debounce-Muster.
+///
+/// Mehrere Eingaben werden in kurzen Abständen erzeugt.
+/// Jede neue Eingabe bricht die zuvor geplante Verarbeitung ab
+/// und startet die Wartezeit erneut.
+///
+/// Erst wenn für eine definierte Zeitspanne (500 ms) keine weitere
+/// Eingabe erfolgt, wird die letzte Eingabe verarbeitet.
+///
+/// Beispiel:
+/// Eingaben im Abstand von 200 ms:
+/// 1 -> 2 -> 3 -> 4 -> 5
+///
+/// Da jede neue Eingabe die vorherige Verarbeitung abbricht,
+/// wird nach Ablauf der Ruhezeit nur die letzte Eingabe (5)
+/// tatsächlich verarbeitet.
+/// </summary>
+public sealed class DebounceDemo(IUiLogger logger) : IAsyncDemo
 {
-    private readonly IUiLogger _logger;
-
     public int SortOrder => 27;
     public string Title => "27 - Debounce";
 
-    public DebounceDemo(IUiLogger logger)
-    {
-        _logger = logger;
-    }
-
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.WriteHeader(Title);
-
-        using CancellationTokenSource localCts = new();
-        using CancellationTokenSource linkedCts =
-            CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, localCts.Token);
+        logger.WriteHeader(Title);
 
         CancellationTokenSource? debounceCts = null;
 
         try
         {
-            for (int i = 1; i <= 5; i++)
+            for (var i = 1; i <= 5; i++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -35,7 +42,7 @@ public sealed class DebounceDemo : IAsyncDemo
 
                 debounceCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-                _logger.WriteLine($"Eingabe {i}");
+                logger.WriteLine($"Eingabe {i}");
 
                 _ = RunDebouncedAsync(i, debounceCts.Token);
 
@@ -56,7 +63,7 @@ public sealed class DebounceDemo : IAsyncDemo
         try
         {
             await Task.Delay(500, cancellationToken);
-            _logger.WriteLine($"Verarbeitet nach Ruhezeit: {value}");
+            logger.WriteLine($"Verarbeitet nach Ruhezeit: {value}");
         }
         catch (OperationCanceledException)
         {

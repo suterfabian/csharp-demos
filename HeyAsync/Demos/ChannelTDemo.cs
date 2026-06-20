@@ -46,7 +46,7 @@ public sealed class ChannelTDemo(IUiLogger logger) : IAsyncDemo
 
                 await writer.WriteAsync(i, cancellationToken);
 
-                await Task.Delay(300, cancellationToken);
+                await Task.Delay(150, cancellationToken);
             }
             
             writer.TryComplete();

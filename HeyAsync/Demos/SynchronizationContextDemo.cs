@@ -2,7 +2,18 @@
 
 namespace HeyAsync.Demos;
 
-// SynchronizationContext = allgemeine Abstraktion über den UI-Kontext
+/// <summary>
+/// Demonstriert die Synchronisation zurück auf den ursprünglichen
+/// SynchronizationContext.
+///
+/// Die Arbeit läuft auf einem Hintergrund-Thread.
+/// Mit SynchronizationContext.Post(...) wird anschliessend
+/// sicher in den UI-Kontext zurückgewechselt, um UI-Code
+/// auszuführen.
+///
+/// Im Gegensatz zum Dispatcher ist SynchronizationContext
+/// nicht an eine bestimmte UI-Technologie gebunden.
+/// </summary>
 public sealed class SynchronizationContextDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 34;
@@ -22,7 +33,7 @@ public sealed class SynchronizationContextDemo(IUiLogger logger) : IAsyncDemo
 
         await Task.Run(async () =>
         {
-            await Task.Delay(3000, cancellationToken);
+            await Task.Delay(1000, cancellationToken);
 
             uiContext.Post(_ =>
             {
