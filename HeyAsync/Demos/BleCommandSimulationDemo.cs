@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class BleCommandSimulationDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 30;
     public string Title => "30 - BLE Command Simulation";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -26,4 +28,15 @@ public sealed class BleCommandSimulationDemo(IUiLogger logger) : IAsyncDemo
 
         logger.WriteLine($"Antwort: OK für {command}");
     }
+
+    public string Description =>
+        """
+        Simuliert das sequenzielle Senden von BLE-Kommandos.
+
+        Jedes Kommando wird gesendet, danach wird asynchron auf eine
+        simulierte Antwort gewartet.
+
+        Die Kommandos werden nacheinander ausgeführt, weil jeder Aufruf
+        mit await abgeschlossen wird, bevor das nächste Kommando startet.
+        """;
 }

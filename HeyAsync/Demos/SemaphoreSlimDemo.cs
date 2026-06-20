@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class SemaphoreSlimDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 7;
     public string Title => "07 - SemaphoreSlim";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -43,4 +45,15 @@ public sealed class SemaphoreSlimDemo(IUiLogger logger) : IAsyncDemo
             semaphore.Release();
         }
     }
+    
+    public string Description =>
+        """
+        Demonstriert die Begrenzung paralleler Aufgaben mit SemaphoreSlim.
+
+        Es werden mehrere Tasks gestartet, aber nur zwei dürfen gleichzeitig
+        im geschützten Bereich arbeiten.
+
+        WaitAsync wartet asynchron auf einen freien Platz.
+        Release gibt den Platz wieder frei.
+        """;
 }

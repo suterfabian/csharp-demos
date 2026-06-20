@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class WhenAllDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 13;
     public string Title => "13 - Task.WhenAll";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -28,4 +30,14 @@ public sealed class WhenAllDemo(IUiLogger logger) : IAsyncDemo
         await Task.Delay(delay, cancellationToken);
         return $"Operation {name} fertig.";
     }
+    
+    public string Description =>
+        """
+        Demonstriert das parallele Warten auf mehrere Tasks.
+
+        Mehrere asynchrone Operationen werden gleichzeitig gestartet.
+        Task.WhenAll wartet, bis alle Operationen abgeschlossen sind.
+
+        Danach stehen alle Ergebnisse gemeinsam zur Verfügung.
+        """;
 }

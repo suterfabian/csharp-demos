@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using HeyAsync.Models;
 using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
@@ -7,6 +8,7 @@ public sealed class ProducerConsumerDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 19;
     public string Title => "19 - Producer Consumer";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -55,4 +57,15 @@ public sealed class ProducerConsumerDemo(IUiLogger logger) : IAsyncDemo
             }
         }, cancellationToken);
     }
+    
+    public string Description =>
+        """
+        Demonstriert das Producer-Consumer-Muster.
+
+        Der Producer erzeugt Werte und legt sie in eine Queue.
+        Der Consumer liest die Werte aus der Queue und verarbeitet sie.
+
+        BlockingCollection koordiniert dabei das Warten auf neue Elemente
+        und das Beenden der Verarbeitung.
+        """;
 }

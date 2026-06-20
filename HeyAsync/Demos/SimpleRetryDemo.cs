@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -8,6 +9,7 @@ public sealed class SimpleRetryDemo(IUiLogger logger) : IAsyncDemo
 
     public int SortOrder => 22;
     public string Title => "22 - Retry einfach";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -45,4 +47,16 @@ public sealed class SimpleRetryDemo(IUiLogger logger) : IAsyncDemo
             throw new InvalidOperationException("Transienter Fehler.");
         }
     }
+    
+    public string Description =>
+        """
+        Demonstriert einen einfachen Retry-Mechanismus.
+
+        Eine instabile Operation wird mehrfach versucht.
+        Schlägt sie fehl, wird der Fehler protokolliert und der
+        nächste Versuch gestartet.
+
+        Nach der maximalen Anzahl Versuche gilt die Operation
+        als fehlgeschlagen.
+        """;
 }

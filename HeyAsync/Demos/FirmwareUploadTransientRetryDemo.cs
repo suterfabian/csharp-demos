@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -8,6 +9,7 @@ public sealed class FirmwareUploadTransientRetryDemo(IUiLogger logger) : IAsyncD
 
     public int SortOrder => 32;
     public string Title => "32 - Firmware Upload transienter Retry";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -76,4 +78,14 @@ public sealed class FirmwareUploadTransientRetryDemo(IUiLogger logger) : IAsyncD
             throw new InvalidOperationException($"Transienter BLE-Fehler bei Chunk {chunk}.");
         }
     }
+
+    public string Description =>
+        """
+        Simuliert einen Firmware-Upload mit transienten Fehlern.
+
+        Jeder Chunk wird einzeln gesendet. Bei einem kurzfristigen Fehler
+        wird der Versand desselben Chunks erneut versucht.
+
+        Nach mehreren fehlgeschlagenen Versuchen wird der Fehler weitergegeben.
+        """;
 }

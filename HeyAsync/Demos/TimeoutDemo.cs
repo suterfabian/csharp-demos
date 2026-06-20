@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class TimeoutDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 15;
     public string Title => "15 - Timeout";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -25,4 +27,15 @@ public sealed class TimeoutDemo(IUiLogger logger) : IAsyncDemo
             logger.WriteLine("Timeout erreicht.");
         }
     }
+    
+    public string Description =>
+        """
+        Demonstriert einen Timeout für eine asynchrone Operation.
+
+        Ein interner CancellationTokenSource bricht nach einer Sekunde ab.
+        Dieser wird mit dem externen CancellationToken kombiniert.
+
+        Wird die Operation nicht rechtzeitig fertig, wird sie abgebrochen
+        und als Timeout behandelt.
+        """;
 }

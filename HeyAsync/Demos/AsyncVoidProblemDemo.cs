@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class AsyncVoidProblemDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 11;
     public string Title => "11 - async void Problem";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -24,4 +26,15 @@ public sealed class AsyncVoidProblemDemo(IUiLogger logger) : IAsyncDemo
         await Task.Delay(500, cancellationToken);
         logger.WriteLine("SafeAsyncMethod wurde awaited.");
     }
+
+    public string Description =>
+        """
+        Zeigt, warum async void problematisch ist.
+
+        async void-Methoden können nicht awaited werden und Ausnahmen
+        lassen sich nur schwer behandeln.
+
+        Für normale asynchrone Methoden sollte deshalb async Task
+        verwendet werden. async void ist hauptsächlich für UI-Events gedacht.
+        """;
 }

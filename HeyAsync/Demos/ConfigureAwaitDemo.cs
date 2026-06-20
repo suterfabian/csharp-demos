@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class ConfigureAwaitDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 10;
     public string Title => "10 - ConfigureAwait";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -28,4 +30,16 @@ public sealed class ConfigureAwaitDemo(IUiLogger logger) : IAsyncDemo
 
         logger.WriteLine($"Nach ConfigureAwait(true): {Environment.CurrentManagedThreadId}");
     }
+
+    public string Description =>
+        """
+        Demonstriert den Unterschied zwischen normalem await
+        und ConfigureAwait(false).
+
+        Ein normales await versucht, nach dem Warten in den ursprünglichen
+        Kontext zurückzukehren.
+
+        ConfigureAwait(false) erzwingt diese Rückkehr nicht.
+        Die Fortsetzung darf dadurch auf einem ThreadPool-Thread laufen.
+        """;
 }

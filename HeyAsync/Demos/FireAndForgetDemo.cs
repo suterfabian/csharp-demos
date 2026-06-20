@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class FireAndForgetDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 16;
     public string Title => "16 - Fire and Forget";
+    public DemoType Type => DemoType.Async;
 
     public Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -36,4 +38,15 @@ public sealed class FireAndForgetDemo(IUiLogger logger) : IAsyncDemo
             logger.WriteLine($"Fehler: {ex.Message}");
         }
     }
+
+    public string Description =>
+        """
+        Demonstriert eine Fire-and-Forget-Aufgabe.
+
+        Die Hintergrundaufgabe wird gestartet, aber nicht awaited.
+        Die aufrufende Methode läuft deshalb sofort weiter.
+
+        Fehler und Abbrüche müssen innerhalb der Hintergrundaufgabe
+        selbst behandelt werden.
+        """;
 }

@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class WhenAnyDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 14;
     public string Title => "14 - Task.WhenAny";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -25,4 +27,15 @@ public sealed class WhenAnyDemo(IUiLogger logger) : IAsyncDemo
         await Task.Delay(delay, cancellationToken);
         return $"{name} ist fertig.";
     }
+    
+    public string Description =>
+        """
+        Demonstriert das Warten auf den zuerst abgeschlossenen Task.
+
+        Mehrere asynchrone Operationen laufen parallel.
+        Task.WhenAny liefert zurück, sobald die erste Operation fertig ist.
+
+        Die übrigen Tasks laufen dabei weiter, sofern sie nicht separat
+        abgebrochen werden.
+        """;
 }

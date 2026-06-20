@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class FirmwareUploadSimulationDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 31;
     public string Title => "31 - Firmware Upload Simulation";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -28,4 +30,14 @@ public sealed class FirmwareUploadSimulationDemo(IUiLogger logger) : IAsyncDemo
 
         logger.WriteLine("Firmware Upload abgeschlossen.");
     }
+    
+    public string Description =>
+        """
+        Simuliert einen Firmware-Upload in mehreren Datenblöcken.
+
+        Die Firmware wird in Chunks aufgeteilt und nacheinander
+        asynchron gesendet.
+
+        Nach jedem Chunk wird der Fortschritt in Prozent ausgegeben.
+        """;
 }

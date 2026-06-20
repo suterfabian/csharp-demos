@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -8,6 +9,7 @@ public sealed class AsyncLockDemo(IUiLogger logger) : IAsyncDemo
 
     public int SortOrder => 21;
     public string Title => "21 - Async Lock";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -34,4 +36,15 @@ public sealed class AsyncLockDemo(IUiLogger logger) : IAsyncDemo
             _semaphore.Release();
         }
     }
+
+    public string Description =>
+        """
+        Demonstriert einen asynchronen Lock mit SemaphoreSlim.
+        
+        Mehrere Tasks starten gleichzeitig, dürfen den kritischen Bereich
+        aber nur nacheinander betreten.
+        
+        WaitAsync wartet asynchron auf den Zugriff.
+        Release gibt den Zugriff im finally-Block wieder frei.
+        """; 
 }

@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -7,6 +8,7 @@ public sealed class LockDemo(IUiLogger logger) : IAsyncDemo
     private readonly Lock _syncRoot = new();
     public int SortOrder => 5;
     public string Title => "05 - Lock";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -35,4 +37,17 @@ public sealed class LockDemo(IUiLogger logger) : IAsyncDemo
         logger.WriteLine($"Tatsächlich: {counter}");
         logger.WriteLine("lock schützt den kritischen Bereich.");
     }
+
+    public string Description =>
+        """
+        Demonstriert den Schutz eines kritischen Bereichs mit lock.
+
+        Mehrere parallele Operationen greifen auf denselben Counter zu.
+        Durch lock darf immer nur ein Thread gleichzeitig den Counter erhöhen.
+
+        Dadurch wird ein Race Condition verhindert.
+        
+        Nicht mit await verwendbar!
+        Für asynchronen Code verwendet man stattdessen: SemaphoreSlim
+        """;
 }

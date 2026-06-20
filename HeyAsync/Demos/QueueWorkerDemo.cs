@@ -1,26 +1,14 @@
 ﻿using System.Threading.Channels;
+using HeyAsync.Models;
 using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
-/// <summary>
-/// Demonstriert einen einfachen Queue-Worker mit Channel.
-///
-/// Commands werden in eine Queue geschrieben, während ein Worker
-/// diese im Hintergrund nacheinander ausliest und verarbeitet.
-///
-/// Das Einreihen erfolgt schneller als die Verarbeitung.
-/// Dadurch wird sichtbar, dass der Channel die Commands puffert
-/// und der Worker sie kontrolliert der Reihe nach abarbeitet.
-///
-/// Nach dem Einreihen aller Commands wird der Writer abgeschlossen.
-/// Der Worker verarbeitet anschliessend alle verbleibenden Einträge,
-/// bis die Queue leer ist.
-/// </summary>
 public sealed class QueueWorkerDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 29;
     public string Title => "29 - Queue Worker";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -51,4 +39,20 @@ public sealed class QueueWorkerDemo(IUiLogger logger) : IAsyncDemo
 
         logger.WriteLine("Queue leer.");
     }
+
+    public string Description =>
+        """
+        Demonstriert einen einfachen Queue-Worker mit Channel.
+        
+        Commands werden in eine Queue geschrieben, während ein Worker
+        diese im Hintergrund nacheinander ausliest und verarbeitet.
+        
+        Das Einreihen erfolgt schneller als die Verarbeitung.
+        Dadurch wird sichtbar, dass der Channel die Commands puffert
+        und der Worker sie kontrolliert der Reihe nach abarbeitet.
+        
+        Nach dem Einreihen aller Commands wird der Writer abgeschlossen.
+        Der Worker verarbeitet anschliessend alle verbleibenden Einträge,
+        bis die Queue leer ist.
+        """;
 }

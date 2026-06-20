@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class RaceConditionDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 4;
     public string Title => "04 - Race Condition";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -28,4 +30,15 @@ public sealed class RaceConditionDemo(IUiLogger logger) : IAsyncDemo
         logger.WriteLine($"Tatsächlich: {counter}");
         logger.WriteLine("counter++ ist nicht atomar.");
     }
+    
+    public string Description =>
+        """
+        Demonstriert eine Race Condition bei parallelem Zugriff.
+
+        Viele parallele Operationen erhöhen denselben Counter.
+        Da counter++ nicht atomar ist, können einzelne Erhöhungen
+        verloren gehen.
+
+        Das tatsächliche Ergebnis kann deshalb kleiner sein als erwartet.
+        """;
 }

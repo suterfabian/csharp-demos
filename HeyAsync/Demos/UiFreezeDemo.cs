@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class UiFreezeDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 18;
     public string Title => "18 - UI Freeze";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -50,4 +52,16 @@ public sealed class UiFreezeDemo(IUiLogger logger) : IAsyncDemo
         logger.WriteLine($"Berechnung fertig: {result}");
 */
     }
+    
+    public string Description =>
+        """
+        Demonstriert den Unterschied zwischen CPU-Arbeit auf dem UI-Thread
+        und ausgelagerter Arbeit mit Task.Run.
+
+        Läuft die Berechnung direkt in ExecuteAsync, wird der UI-Thread
+        währenddessen blockiert.
+
+        Wird die Berechnung in Task.Run ausgeführt, bleibt die UI
+        während der CPU-Arbeit bedienbar.
+        """;
 }

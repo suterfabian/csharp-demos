@@ -53,6 +53,7 @@ public partial class App : Application
         services.AddTransient<IAsyncDemo, DispatcherSynchronizationDemo>();
         services.AddTransient<IAsyncDemo, SynchronizationContextDemo>();
         services.AddTransient<IAsyncDemo, ChannelTDemo>();
+        services.AddTransient<IAsyncDemo, RxSelectDemo>();
 
         services.AddTransient<MainViewModel>();
         services.AddTransient<MainWindow>();

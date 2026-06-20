@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class TaskRunDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 2;
     public string Title => "02 - Task.Run";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -22,4 +24,14 @@ public sealed class TaskRunDemo(IUiLogger logger) : IAsyncDemo
         logger.WriteLine($"Worker Thread in Task.Run: {workerThreadId}");
         logger.WriteLine($"UI Thread nach await: {Environment.CurrentManagedThreadId}");
     }
+    
+    public string Description =>
+        """
+        Demonstriert die Ausführung von Arbeit mit Task.Run.
+
+        Die Arbeit wird auf einen ThreadPool-Thread ausgelagert.
+        Die UI bleibt währenddessen frei und wird nicht blockiert.
+
+        Nach dem await läuft die Methode im ursprünglichen Kontext weiter.
+        """;
 }

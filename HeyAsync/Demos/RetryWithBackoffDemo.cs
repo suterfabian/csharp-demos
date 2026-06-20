@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -8,21 +9,8 @@ public sealed class RetryWithBackoffDemo(IUiLogger logger) : IAsyncDemo
 
     public int SortOrder => 23;
     public string Title => "23 - Retry mit Backoff";
-
-    // Backoff = Verzögerung vor dem nächsten Retry.
-    // Die Verzögerung wird typischerweise mit jedem Versuch erhöht.
-    //
-    // Jitter = zusätzlicher Zufallsanteil zur Verzögerung.
-    // Dadurch retryen parallele Prozesse nicht exakt gleichzeitig.
-    //
-    // Linear Backoff:          var delay = attempt * 500;
-    // Exponential Backoff:     var delay = Math.Pow(2, attempt) * 100;
-    //
-    // Backoff + Jitter:
-    // Die Basis-Verzögerung wird um einen kleinen Zufallswert erweitert.
-    //
-    // var baseDelay = Math.Pow(2, attempt) * 100;
-    // var delay = baseDelay + Random.Shared.Next(0, 500);
+    public DemoType Type => DemoType.Async;
+    
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         logger.WriteHeader(Title);
@@ -64,4 +52,32 @@ public sealed class RetryWithBackoffDemo(IUiLogger logger) : IAsyncDemo
             throw new InvalidOperationException("Temporärer Fehler.");
         }
     }
+
+    public string Description =>
+        """
+        Demonstriert Retry mit einfachem Backoff.
+
+        Eine instabile Operation kann vorübergehend fehlschlagen.
+        Nach jedem Fehler wird kurz gewartet und die Operation erneut versucht.
+
+        Die Wartezeit wird pro Versuch grösser, damit das System
+        zwischen den Wiederholungen mehr Zeit zur Erholung bekommt.
+        
+        -----------------------------------------------------------------------
+
+        Backoff = Verzögerung vor dem nächsten Retry.
+        Die Verzögerung wird typischerweise mit jedem Versuch erhöht.
+        
+        Jitter = zusätzlicher Zufallsanteil zur Verzögerung.
+        Dadurch retryen parallele Prozesse nicht exakt gleichzeitig.
+        
+        Linear Backoff:          var delay = attempt * 500;
+        Exponential Backoff:     var delay = Math.Pow(2, attempt) * 100;
+        
+        Backoff + Jitter:
+        Die Basis-Verzögerung wird um einen kleinen Zufallswert erweitert.
+        
+        var baseDelay = Math.Pow(2, attempt) * 100;
+        var delay = baseDelay + Random.Shared.Next(0, 500);
+        """;
 }

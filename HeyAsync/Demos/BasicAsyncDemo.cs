@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class BasicAsyncDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 1;
     public string Title => "01 - Basic async/await";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -19,4 +21,15 @@ public sealed class BasicAsyncDemo(IUiLogger logger) : IAsyncDemo
         logger.WriteLine($"Nach await - Thread ID: {Environment.CurrentManagedThreadId}");
         logger.WriteLine("Ende");
     }
+
+    public string Description =>
+        """
+        Zeigt die Grundlagen von async und await.
+
+        Die Methode startet synchron, wartet dann asynchron mit Task.Delay
+        und läuft anschliessend weiter.
+
+        Dabei wird sichtbar, dass await den Thread nicht blockiert,
+        sondern die Ausführung später fortsetzt.
+        """;
 }

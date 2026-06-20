@@ -1,31 +1,14 @@
 ﻿using System.Runtime.CompilerServices;
+using HeyAsync.Models;
 using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
-/*
-    Diese Demo zeigt einen Async Stream mit IAsyncEnumerable<T>.
-
-    Ein Async Stream liefert Werte nicht alle auf einmal,
-    sondern nach und nach über die Zeit.
-
-    In dieser Demo:
-        - GenerateValuesAsync erzeugt alle 400 ms einen neuen Wert
-        - yield return gibt jeden Wert einzeln zurück
-        - await foreach verarbeitet die Werte, sobald sie verfügbar sind
-        - der CancellationToken erlaubt einen sauberen Abbruch
-
-    Das ist nützlich für:
-        - Datenströme
-        - Paging
-        - Events
-        - Sensorwerte
-        - fortlaufende Verarbeitung
-*/
 public sealed class AsyncStreamDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 26;
     public string Title => "26 - Async Stream";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -46,4 +29,25 @@ public sealed class AsyncStreamDemo(IUiLogger logger) : IAsyncDemo
             yield return i;
         }
     }
+
+    public string Description =>
+        """
+        Diese Demo zeigt einen Async Stream mit IAsyncEnumerable<T>.
+        
+        Ein Async Stream liefert Werte nicht alle auf einmal,
+        sondern nach und nach über die Zeit.
+        
+        In dieser Demo:
+            - GenerateValuesAsync erzeugt alle 400 ms einen neuen Wert
+            - yield return gibt jeden Wert einzeln zurück
+            - await foreach verarbeitet die Werte, sobald sie verfügbar sind
+            - der CancellationToken erlaubt einen sauberen Abbruch
+        
+        Das ist nützlich für:
+            - Datenströme
+            - Paging
+            - Events
+            - Sensorwerte
+            - fortlaufende Verarbeitung
+        """;
 }

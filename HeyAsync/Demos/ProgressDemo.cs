@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class ProgressDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 9;
     public string Title => "09 - Progress";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -30,4 +32,15 @@ public sealed class ProgressDemo(IUiLogger logger) : IAsyncDemo
 
         logger.WriteLine("Fertig.");
     }
+    
+    public string Description =>
+        """
+        Demonstriert Fortschrittsmeldungen mit IProgress<T>.
+
+        Die Arbeit läuft in einem Hintergrund-Task.
+        Über progress.Report(...) werden Fortschrittswerte gemeldet.
+
+        Progress<T> sorgt dafür, dass die Ausgabe wieder im ursprünglichen
+        Kontext ausgeführt wird.
+        """;
 }

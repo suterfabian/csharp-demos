@@ -1,4 +1,5 @@
-﻿using HeyAsync.Services;
+﻿using HeyAsync.Models;
+using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
 
@@ -6,6 +7,7 @@ public sealed class CancellationTokenDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 8;
     public string Title => "08 - CancellationToken";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -23,4 +25,15 @@ public sealed class CancellationTokenDemo(IUiLogger logger) : IAsyncDemo
             await Task.Delay(1000, linkedCts.Token);
         }
     }
+
+    public string Description =>
+        """
+        Demonstriert den Abbruch einer asynchronen Operation.
+
+        Die Demo verwendet einen externen CancellationToken und zusätzlich
+        einen internen Timeout von 5 Sekunden.
+
+        Mit CreateLinkedTokenSource werden beide Abbruchsignale kombiniert.
+        Die Schleife endet, sobald einer der beiden Tokens abgebrochen wird.
+        """;
 }

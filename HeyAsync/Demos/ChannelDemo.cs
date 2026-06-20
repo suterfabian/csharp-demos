@@ -1,4 +1,5 @@
 ﻿using System.Threading.Channels;
+using HeyAsync.Models;
 using HeyAsync.Services;
 
 namespace HeyAsync.Demos;
@@ -7,6 +8,7 @@ public sealed class ChannelDemo(IUiLogger logger) : IAsyncDemo
 {
     public int SortOrder => 20;
     public string Title => "20 - Channel";
+    public DemoType Type => DemoType.Async;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -36,4 +38,14 @@ public sealed class ChannelDemo(IUiLogger logger) : IAsyncDemo
 
         await Task.WhenAll(producer, consumer);
     }
+
+    public string Description =>
+        """
+        Demonstriert die Kommunikation über einen Channel.
+
+        Ein Producer schreibt Werte asynchron in den Channel.
+        Ein Consumer liest diese Werte parallel wieder aus.
+
+        Der Channel entkoppelt Erzeugung und Verarbeitung der Daten.
+        """;
 }
