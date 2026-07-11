@@ -28,7 +28,7 @@ public sealed class InterlockedDemo(IUiLogger logger) : IAsyncDemo
 
         logger.WriteLine("Erwartet: 100000");
         logger.WriteLine($"Tatsächlich: {counter}");
-        logger.WriteLine("Interlocked.Increment ist atomar.");
+        logger.WriteLine("Interlocked. Increment ist atomar.");
     }
 
     public string Description =>
