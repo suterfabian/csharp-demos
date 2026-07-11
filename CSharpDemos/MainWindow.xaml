@@ -82,6 +82,7 @@
                                 <DataTemplate>
                                     <Button Content="{Binding Title}"
                                             Command="{Binding Command}"
+                                            ToolTip="{Binding Description}"
                                             Style="{StaticResource MenuButtonStyle}" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

@@ -30,7 +30,8 @@ public sealed partial class MainViewModel : ObservableObject
                 .OrderBy(demo => demo.SortOrder)
                 .Select(demo => new AsyncDemoButtonViewModel(
                     demo.Title,
-                    new AsyncRelayCommand(() => RunDemoAsync(demo), CanRunDemo))));
+                    new AsyncRelayCommand(() => RunDemoAsync(demo), CanRunDemo),
+                    demo.Description)));
 
         _logger.OutputChanged += OnOutputChanged;
     }

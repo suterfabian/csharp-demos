@@ -54,6 +54,11 @@ public partial class App : Application
         services.AddTransient<IAsyncDemo, SynchronizationContextDemo>();
         services.AddTransient<IAsyncDemo, ChannelTDemo>();
         services.AddTransient<IAsyncDemo, RxSelectDemo>();
+        services.AddTransient<IAsyncDemo, RxCombineLatestDemo>();
+        services.AddTransient<IAsyncDemo, RxSwitchDemo>();
+        services.AddTransient<IAsyncDemo, RxMergeDemo>();
+        services.AddTransient<IAsyncDemo, RxThrottleDemo>();
+        services.AddTransient<IAsyncDemo, RxDistinctUntilChangedDemo>();
 
         services.AddTransient<MainViewModel>();
         services.AddTransient<MainWindow>();
